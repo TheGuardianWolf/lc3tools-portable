@@ -55,7 +55,7 @@ version caused me grief last time I launched it, but I haven't
 had time to investigate.
 
 DEBIAN USERS (and possibly some other distributions of Linux):
-After you configure, remove "-lcurses" from the OS_SIM_LIBS
+After you configure, remove "-lcurses" from the OS\_SIM\_LIBS
 definition in the Makefile.  (Or you can install the curses library,
 but the routines that I use are in the standard library in the
 Debian distribution.  In other distributions, they're in the
@@ -70,15 +70,15 @@ Windows NT-based systems with appropriate support (e.g., Cygwin).
 
 First, decide where the binaries and LC-3 OS code should be installed.
     * If you want it in the directory in which you unpacked the code,
-      simply type "configure."
-    * If you want it in a different directory, say /usr/bin, type
-      configure --installdir /usr/bin
+      simply type ```./configure```.
+    * If you want it in a different directory, say ```/usr/bin```, type
+      ```configure --installdir /usr/bin```
       replacing /usr/bin with the desired directory.
 
-Then type 'make'.
+Then type ```make```.
 
 If you want to make the tools available to other people, next type
-'make install'.  If not, don't.
+```make install```.  If not, don't.
 
 Please send any comments or bug reports to me at nano (at) pixelcollider (dot) net.
 
