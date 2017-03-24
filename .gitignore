@@ -1,3 +1,10 @@
+build
+
+*.sym
+*.lc3*
+Makefile
+lc3sim-tk
+
 # Object files
 *.o
 *.ko
