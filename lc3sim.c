@@ -2,6 +2,7 @@
  *
  * lc3sim.c - the main source file for the LC-3 simulator
  *
+ * "Copyright (c) 2017 by Jerry Fan"
  * "Copyright (c) 2003 by Steven S. Lumetta."
  *
  * Permission to use, copy, modify, and distribute this software and its
@@ -23,11 +24,14 @@
  * BASIS, AND THE AUTHOR NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, 
  * UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
  *
- * Author:	    Steve Lumetta
- * Version:	    1
+ * Authors:	    Jerry Fan, Steve Lumetta
+ * Version:	    1.1
  * Creation Date:   18 October 2003
+ * Last Modification Date: 24 March 2017
  * Filename:	    lc3sim.c
  * History:
+ *	JF	1.1	24 March 2017
+ *		Patched to look for dependencies relative to built executable.
  *	SSL	1	18 October 2003
  *		Copyright notices and Gnu Public License marker added.
  */
@@ -69,6 +73,11 @@
 #define TOO_MANY_ARGS     "WARNING: Ignoring excess arguments."
 #define BAD_ADDRESS       \
 	"Addresses must be labels or values in the range x0000 to xFFFF."
+
+ #define MIN(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a < _b ? _a : _b; })
 
 /* 
    Types of breakpoints.  Currently only user breakpoints are
@@ -649,6 +658,27 @@ squash_symbols (int addr_s, int addr_e)
     }
 }
 
+static int 
+get_exe_dir (char *pBuf)
+{
+    char szTmp[256];
+    int len = 256;
+    sprintf(szTmp, "/proc/%d/exe", getpid());
+    int bytes = MIN(readlink(szTmp, pBuf, len), len - 1);
+    if(bytes >= 0)
+        pBuf[bytes] = '\0';
+
+	for (int i = bytes - 1; i >= 0; i--) {
+		if (pBuf[i] == '\\' || pBuf[i] == '/') {
+			pBuf[i + 1] = '\0';
+			bytes = i + 1;
+            break;
+		}
+	}
+
+	return bytes;
+}
+
 
 static void 
 init_machine ()
@@ -665,14 +695,25 @@ init_machine ()
     bzero (lc3_sym_hash, sizeof (lc3_sym_hash));
     clear_all_breakpoints ();
 
-    if (read_obj_file (INSTALL_DIR "/lc3os.obj", &os_start, &os_end) == -1) {
+    char pBuf[256];
+    get_exe_dir(pBuf);
+
+    char obj[256];
+	char sym[256];
+
+    strcpy(obj, pBuf);
+    strcpy(sym, pBuf);
+	strcat(obj, "lc3os.obj");
+	strcat(sym, "lc3os.sym");
+
+    if (read_obj_file (obj, &os_start, &os_end) == -1) {
 	if (gui_mode)
 	    puts ("ERR {Failed to read LC-3 OS code.}");
 	else
 	    puts ("Failed to read LC-3 OS code.");
 	show_state_if_stop_visible ();
     } else {
-	if (read_sym_file (INSTALL_DIR "/lc3os.sym") == -1) {
+	if (read_sym_file (sym) == -1) {
 	    if (gui_mode)
 		puts ("ERR {Failed to read LC-3 OS symbols.}");
 	    else
