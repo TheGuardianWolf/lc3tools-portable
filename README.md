@@ -80,8 +80,5 @@ Then type 'make'.
 If you want to make the tools available to other people, next type
 'make install'.  If not, don't.
 
-Please send any comments or bug reports to me at lumetta@uiuc.edu.
-Unfortunately, due to the volume of e-mail that I receive on a regular
-basis, I cannot guarantee that I will respond to your mail, but
-I will almost definitely read it.
+Please send any comments or bug reports to me at nano (at) pixelcollider (dot) net.
 
