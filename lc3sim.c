@@ -1398,6 +1398,7 @@ parse_address (const unsigned char* addr)
     unsigned char* fmt;
     int value, negated;
     unsigned char trash[2];
+	unsigned int isNumber = 0;
 
     /* default matching order: symbol, hexadecimal */
     /* hexadecimal can optionally be preceded by x or X */
@@ -1415,10 +1416,15 @@ parse_address (const unsigned char* addr)
 	    fmt = "#%d%1s";
 	else if (tolower (*addr) == 'x')
 	    fmt = "x%x%1s";
+	else if (tolower (*addr) == 'b') {
+		isNumber = 1;
+		value = strtol(addr, NULL, 2);
+	}
 	else
 	    fmt = "%x%1s";
-	if (sscanf (addr, fmt, &value, trash) != 1 || value > 0xFFFF ||
-	    ((negated && value < 0) || (!negated && value < -0xFFFF)))
+	if (isNumber != 1 || sscanf (addr, fmt, &value, trash) != 1 || 
+		value > 0xFFFF || ((negated && value < 0) || 
+		(!negated && value < -0xFFFF)))
 	    return -1;
     }
     if (negated)

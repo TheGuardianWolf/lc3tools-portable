@@ -198,6 +198,7 @@ CCODE    [Nn]?[Zz]?[Pp]?
 
 /* operand types */
 REGISTER [rR][0-7]
+BINARY   [bB][-]?[01]+
 HEX      [xX][-]?[0-9a-fA-F]+
 DECIMAL  [#]?[-]?[0-9]+
 IMMED    {HEX}|{DECIMAL}
@@ -464,6 +465,8 @@ read_val (const char* s, int* vptr, int bits)
     char* trash;
     long v;
 
+    if (*s == 'b' || *s == 'B')
+    v = strtol (s, &trash, 2);
     if (*s == 'x' || *s == 'X')
 	v = strtol (s + 1, &trash, 16);
     else {
