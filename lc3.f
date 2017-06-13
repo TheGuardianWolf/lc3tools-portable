@@ -3,6 +3,7 @@
  * lc3.f - lexer for the LC-3 assembler
  *
  * "Copyright (c) 2003 by Steven S. Lumetta."
+ * "Copyright (c) 2017 by Jerry Fan."
  *
  * Permission to use, copy, modify, and distribute this software and its
  * documentation for any purpose, without fee, and without written 
@@ -30,6 +31,8 @@
  * History:
  *	SSL	1	18 October 2003
  *		Copyright notices and Gnu Public License marker added.
+ *  Binary Patch   13 June 2017
+ *      Updated to be compatible with binary input for assembler.
  */
 
 %option noyywrap nounput
@@ -201,7 +204,7 @@ REGISTER [rR][0-7]
 BINARY   [bB][-]?[01]+
 HEX      [xX][-]?[0-9a-fA-F]+
 DECIMAL  [#]?[-]?[0-9]+
-IMMED    {HEX}|{DECIMAL}
+IMMED    {HEX}|{DECIMAL}{BINARY}
 LABEL    [A-Za-z][A-Za-z_0-9]*
 STRING   \"([^\"]*|(\\\"))*\"
 UTSTRING \"[^\n\r]*
@@ -466,8 +469,8 @@ read_val (const char* s, int* vptr, int bits)
     long v;
 
     if (*s == 'b' || *s == 'B')
-    v = strtol (s, &trash, 2);
-    if (*s == 'x' || *s == 'X')
+    v = strtol (s + 1, &trash, 2);
+    else if (*s == 'x' || *s == 'X')
 	v = strtol (s + 1, &trash, 16);
     else {
 	if (*s == '#')
