@@ -2,12 +2,14 @@
 
 ## MODIFICATIONS
 
-Updated 24/03/17 by Jerry Fan
+Updated 26/06/17 by Jerry Fan
 
 This tool has been modified to always look in the lc3sim.exe directory for 
 the lc3os.sym and lc3os.obj files.
 
 Essentially, this makes the tools portable.
+
+Additionally binary support for LC3 ASM files have been added.
 
 ##  DESCRIPTION OF CONTENTS
 
